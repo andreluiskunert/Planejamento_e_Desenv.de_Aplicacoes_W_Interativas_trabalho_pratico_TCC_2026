@@ -1,3 +1,7 @@
+// =============================
+// 1) CATÁLOGO DE RECEITAS (JSON + DOM)
+// =============================
+
 // Vetor JSON (como pede a prática)
 const receitas = [
   {
@@ -53,6 +57,7 @@ function getCard(receita) {
 
 function preencherCatalogo(lista = receitas) {
   const pnl = document.getElementById("pnlCatalogo");
+  if (!pnl) return;
 
   const html = lista
     .map((r) => getCard(r))
@@ -62,7 +67,10 @@ function preencherCatalogo(lista = receitas) {
 }
 
 function filtrarReceitas() {
-  const busca = document.getElementById("busca").value.toLowerCase().trim();
+  const input = document.getElementById("busca");
+  if (!input) return;
+
+  const busca = input.value.toLowerCase().trim();
 
   if (!busca) {
     preencherCatalogo(receitas);
@@ -77,9 +85,47 @@ function filtrarReceitas() {
 }
 
 function limparFiltro() {
-  document.getElementById("busca").value = "";
+  const input = document.getElementById("busca");
+  if (input) input.value = "";
   preencherCatalogo(receitas);
 }
 
-// carregar ao abrir
-window.onload = () => preencherCatalogo();
+// =============================
+// 2) LIGHTBOX DOS PRINTS (abre em tela cheia e fecha só no X)
+// =============================
+
+function configurarLightboxPrints() {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
+  const closeBtn = document.getElementById("closeBtn");
+
+  // Se o usuário ainda não colocou o HTML do lightbox, não quebra o site
+  if (!lightbox || !lightboxImg || !closeBtn) return;
+
+  // Clica no print -> abre
+  document.querySelectorAll(".print-img").forEach((img) => {
+    img.addEventListener("click", () => {
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt || "Print ampliado";
+      lightbox.classList.add("active");
+      document.body.style.overflow = "hidden";
+    });
+  });
+
+  // Fecha SOMENTE no X
+  closeBtn.addEventListener("click", () => {
+    lightbox.classList.remove("active");
+    lightboxImg.src = "";
+    lightboxImg.alt = "";
+    document.body.style.overflow = "auto";
+  });
+}
+
+// =============================
+// 3) INICIALIZAÇÃO (quando a página carregar)
+// =============================
+
+document.addEventListener("DOMContentLoaded", () => {
+  preencherCatalogo();
+  configurarLightboxPrints();
+});
