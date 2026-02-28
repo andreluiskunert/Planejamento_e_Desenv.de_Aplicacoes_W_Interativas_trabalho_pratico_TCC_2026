@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo de Receitas</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body{
+        background: linear-gradient(135deg, #fde68a, #fbbf24);
+      }
+      .hero{
+        border-radius: 18px;
+        background: rgba(255,255,255,.65);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 12px 40px rgba(0,0,0,.18);
+      }
+      .card{
+        border: 0;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(0,0,0,.18);
+        transition: transform .12s ease;
+      }
+      .card:hover{ transform: translateY(-3px); }
+      .card-img-top{
+        height: 160px;
+        object-fit: cover;
+      }
+      .badge-soft{
+        background: rgba(13,110,253,.12);
+        color: #0d6efd;
+        border: 1px solid rgba(13,110,253,.22);
+      }
+    </style>
+  </head>
+
+  <body class="container-fluid bg-warning" onload="preencheCatalogo()">
+    <div class="container py-4">
+      <div class="hero p-4 mb-4">
+        <h1 class="mb-1">Catálogo de Receitas</h1>
+        <p class="mb-0 text-secondary">
+          Cards dinâmicos via <b>JSON</b> + <b>map/reduce</b>.
+        </p>
+      </div>
+
+      <div id="pnlCatalogo" class="d-flex flex-wrap gap-4 pb-4"></div>
+    </div>
+
+    <script>
+      const receitas = [
+        {
+          titulo: "Bolo de Chocolate",
+          imagem: "./img/bolo.png",
+          preparo: "Misture os ingredientes, leve ao forno por 35 minutos e sirva.",
+          ingredientes: ["2 ovos", "1 xícara de açúcar", "1 xícara de farinha", "3 colheres de cacau"]
+        },
+        {
+          titulo: "Lasanha",
+          imagem: "./img/lasanha.png",
+          preparo: "Monte camadas, cubra com molho e queijo e asse até gratinar.",
+          ingredientes: ["Massa de lasanha", "Molho", "Queijo", "Presunto", "Carne (opcional)"]
+        },
+        {
+          titulo: "Salada",
+          imagem: "./img/salada.png",
+          preparo: "Lave, corte e misture. Tempere com sal, limão e azeite.",
+          ingredientes: ["Alface", "Tomate", "Cebola", "Azeite", "Limão", "Sal"]
+        }
+      ];
+
+      function getListaIngredientes(receita) {
+        let texto = "<ul class='mb-2'>";
+        texto += receita.ingredientes
+          .map((ing) => "<li>" + ing + "</li>")
+          .reduce((acc, item) => acc + item, "");
+        texto += "</ul>";
+        return texto;
+      }
+
+      function getCard(receita) {
+        return `
+          <div class="card" style="width: 270px;">
+            <img class="card-img-top" src="${receita.imagem}" alt="${receita.titulo}">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <h5 class="card-title mb-0">${receita.titulo}</h5>
+                <span class="badge badge-soft">Receita</span>
+              </div>
+              <div class="card-text mt-2">
+                ${getListaIngredientes(receita)}
+                <hr class="my-2">
+                <small class="text-secondary">${receita.preparo}</small>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function preencheCatalogo() {
+        const pnl = document.getElementById("pnlCatalogo");
+        const html = receitas
+          .map((r) => getCard(r))
+          .reduce((acc, item) => acc + item, "");
+        pnl.innerHTML = html;
+      }
+    </script>
+  </body>
+</html>

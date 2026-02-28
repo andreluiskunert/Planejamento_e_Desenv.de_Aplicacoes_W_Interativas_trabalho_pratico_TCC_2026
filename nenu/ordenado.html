@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordenação • JS + DOM</title>
+
+    <script src="./ordenando.js"></script>
+
+    <style>
+      :root{
+        --bg1:#0f172a;
+        --bg2:#1e293b;
+        --card:#0b1220cc;
+        --stroke:#334155;
+        --text:#e2e8f0;
+        --muted:#94a3b8;
+        --accent:#22c55e;
+        --accent2:#3b82f6;
+        --danger:#ef4444;
+        --shadow: 0 18px 50px rgba(0,0,0,.35);
+        --r: 16px;
+      }
+      *{ box-sizing:border-box; }
+      body{
+        margin:0;
+        min-height:100vh;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        color:var(--text);
+        background: radial-gradient(1200px 600px at 20% 10%, #1d4ed8 0%, transparent 55%),
+                    radial-gradient(900px 500px at 80% 20%, #22c55e 0%, transparent 55%),
+                    linear-gradient(135deg, var(--bg1), var(--bg2));
+        padding: 28px;
+      }
+      .wrap{
+        max-width: 980px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 18px;
+      }
+      @media (max-width: 900px){
+        .wrap{ grid-template-columns: 1fr; }
+      }
+      .card{
+        background: var(--card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--stroke);
+        border-radius: var(--r);
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+      .title{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      h1{
+        margin:0;
+        font-size: 20px;
+        letter-spacing: .3px;
+      }
+      .subtitle{
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .pill{
+        font-size: 12px;
+        color: #0b1220;
+        background: linear-gradient(90deg, #22c55e, #3b82f6);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .grid{
+        display:grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .row{
+        display:flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      label{
+        display:block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      input, select{
+        width: 100%;
+        padding: 12px 12px;
+        background: #0b1220;
+        border: 1px solid var(--stroke);
+        color: var(--text);
+        border-radius: 12px;
+        outline: none;
+      }
+      input:focus, select:focus{
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96,165,250,.2);
+      }
+
+      .btn{
+        border: 0;
+        padding: 12px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        color: #0b1220;
+        transition: transform .06s ease, filter .12s ease;
+        user-select: none;
+      }
+      .btn:active{ transform: translateY(1px); }
+      .btn:hover{ filter: brightness(1.05); }
+
+      .btn-add{ background: linear-gradient(90deg, var(--accent), #86efac); }
+      .btn-sort{ background: linear-gradient(90deg, var(--accent2), #93c5fd); }
+      .btn-mix{ background: linear-gradient(90deg, #f59e0b, #fde68a); }
+      .btn-clear{ background: linear-gradient(90deg, var(--danger), #fca5a5); }
+
+      .panel{
+        margin-top: 14px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap: 10px;
+      }
+      .count{
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      ul{
+        margin: 14px 0 0;
+        padding: 0;
+        list-style: none;
+        display:grid;
+        gap: 10px;
+      }
+      li{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        background:#0b1220;
+        border:1px solid var(--stroke);
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+      .badge{
+        font-size:12px;
+        color: var(--muted);
+      }
+      .num{
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: .3px;
+      }
+      .hint{
+        color: var(--muted);
+        font-size: 12px;
+        margin: 10px 0 0;
+        line-height: 1.4;
+      }
+      .mini{
+        display:flex;
+        gap: 10px;
+        flex-wrap:wrap;
+        margin-top: 10px;
+      }
+      .mini span{
+        font-size: 12px;
+        color: var(--muted);
+        border: 1px dashed var(--stroke);
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(11,18,32,.6);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <section class="card">
+        <div class="title">
+          <div>
+            <h1>Ordenação com JavaScript + DOM</h1>
+            <p class="subtitle">Adicione números, misture e ordene com Bubble, Selection ou Quick Sort.</p>
+          </div>
+          <div class="pill">DGT2820</div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label for="valor">Valor</label>
+            <input id="valor" type="number" placeholder="Ex.: 42" />
+          </div>
+          <div style="align-self:end">
+            <button class="btn btn-add" onclick="add()">Adicionar</button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div style="flex:1; min-width: 220px;">
+            <label for="algoritmo">Algoritmo</label>
+            <select id="algoritmo">
+              <option selected>Bubble Sort</option>
+              <option>Selection Sort</option>
+              <option>Quick Sort</option>
+            </select>
+          </div>
+
+          <div style="display:flex; gap:10px; align-items:end; flex-wrap:wrap;">
+            <button class="btn btn-sort" onclick="ordenar()">Ordenar</button>
+            <button class="btn btn-mix" onclick="misturar()">Misturar</button>
+            <button class="btn btn-clear" onclick="limpar()">Limpar</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="count" id="contador">0 itens</div>
+          <div class="badge">Dica: use Enter para adicionar</div>
+        </div>
+
+        <ul id="valores"></ul>
+
+        <p class="hint">
+          A lógica segue o enunciado: leitura via DOM, conversão com <b>eval</b>, escolha por <b>selectedIndex</b> e
+          recriação da lista com <b>map + reduce</b>.
+        </p>
+      </section>
+
+      <aside class="card">
+        <h1 style="font-size:16px; margin:0;">Atalhos e sugestões</h1>
+        <p class="subtitle" style="margin-top:8px;">
+          Use valores variados e teste as 3 ordenações para demonstrar domínio.
+        </p>
+        <div class="mini">
+          <span>1) Digite valor</span>
+          <span>2) Enter / Adicionar</span>
+          <span>3) Misturar</span>
+          <span>4) Ordenar</span>
+        </div>
+        <p class="hint" style="margin-top:14px;">
+          Quer deixar ainda mais “profissa”? Dá pra mostrar tempo de execução e tamanho do vetor.
+        </p>
+      </aside>
+    </div>
+
+    <script>
+      function atualizarContador() {
+        var lista = document.getElementById("valores");
+        var qtd = lista.children.length;
+        document.getElementById("contador").innerHTML = qtd + " itens";
+      }
+
+      // Enter para adicionar
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") add();
+      });
+
+      function add() {
+        var campo = document.getElementById("valor");
+        var lista = document.getElementById("valores");
+
+        if (campo.value === "" || campo.value === null) return;
+
+        var node = document.createElement("li");
+        // valor
+        var spanNum = document.createElement("span");
+        spanNum.className = "num";
+        spanNum.appendChild(document.createTextNode(campo.value));
+
+        // etiqueta
+        var spanTag = document.createElement("span");
+        spanTag.className = "badge";
+        spanTag.appendChild(document.createTextNode("item"));
+
+        node.appendChild(spanNum);
+        node.appendChild(spanTag);
+
+        lista.appendChild(node);
+
+        campo.value = "";
+        campo.focus();
+        atualizarContador();
+      }
+
+      function ordenar() {
+        var lista = document.getElementById("valores");
+        var select = document.getElementById("algoritmo");
+
+        var itens = lista.children;
+        var v = [];
+
+        for (var i = 0; i < itens.length; i++) {
+          // pega o primeiro span (num)
+          v.push(eval(itens[i].children[0].innerHTML));
+        }
+
+        var ordenado;
+        if (select.selectedIndex === 0) {
+          ordenado = bubble_sort(v);
+        } else if (select.selectedIndex === 1) {
+          ordenado = selection_sort(v);
+        } else {
+          var copia = [...v];
+          ordenado = quick_sort(copia, 0, copia.length - 1);
+        }
+
+        lista.innerHTML = ordenado
+          .map(function (n) {
+            return '<li><span class="num">' + n + '</span><span class="badge">item</span></li>';
+          })
+          .reduce(function (acc, item) {
+            return acc + item;
+          }, "");
+
+        atualizarContador();
+      }
+
+      function misturar() {
+        var lista = document.getElementById("valores");
+        var itens = lista.children;
+        var v = [];
+
+        for (var i = 0; i < itens.length; i++) {
+          v.push(eval(itens[i].children[0].innerHTML));
+        }
+
+        shuffle(v, 30);
+
+        lista.innerHTML = v
+          .map(function (n) {
+            return '<li><span class="num">' + n + '</span><span class="badge">item</span></li>';
+          })
+          .reduce(function (acc, item) {
+            return acc + item;
+          }, "");
+
+        atualizarContador();
+      }
+
+      function limpar() {
+        document.getElementById("valores").innerHTML = "";
+        atualizarContador();
+        document.getElementById("valor").focus();
+      }
+    </script>
+  </body>
+</html>

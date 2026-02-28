@@ -1,0 +1,77 @@
+/* Imagem de fundo (comida) + overlay para não "sumir" o texto */
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* troque a URL se quiser outra imagem */
+  background-image: url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=80");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  position: relative;
+}
+
+/* overlay escuro por cima da imagem */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: -1;
+}
+
+/* Topbar */
+.topbar {
+  background: rgba(0, 0, 0, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+.title {
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Card “soft” pra texto ficar legível */
+.card-soft {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+/* Cards de receita */
+.recipe-card {
+  width: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.recipe-card img {
+  height: 150px;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Responsivo */
+@media (max-width: 576px) {
+  .recipe-card {
+    width: 100%;
+  }
+}
+footer a {
+  transition: 0.3s;
+}
+
+footer a:hover {
+  color: #ffc107 !important;
+  transform: scale(1.2);
+}
